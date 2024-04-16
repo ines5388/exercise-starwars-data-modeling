@@ -5,27 +5,16 @@ from datetime import datetime
 
 Base = declarative_base()
 
-class Register(Base): 
-    __tablename__ = 'register'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
-    surname = Column(String(250), nullable=False)
-    email = Column(String(250), unique=True, nullable=False)
-    username = Column(String(25), unique=True, nullable=False)
-    password = Column(String(50), nullable=False)
-    created_at = Column(DateTime(), default=datetime.now())
-
-class LogIn(Base):
-    __tablename__ = 'login'
-    id = Column(Integer, primary_key=True)
-    success = Column(Boolean, default=False)
-    user_id = Column(Integer, ForeignKey('users.id'))
-
 class User(Base):
     __tablename__ = 'users'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    surname = Column(String(250), nullable=False) 
+    email = Column(String(250), unique=True, nullable=False)
+    password = Column(String(50), nullable=False)
+    created_at = Column(DateTime(), default=datetime.now(), nullable=False)
     register_id = Column(Integer, ForeignKey('register.id'))
 
 class Character(Base):
@@ -69,7 +58,7 @@ class FavoriteVehicle(Base):
     __tablename__ = 'favorites_vehicles'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    user_relantionshiop = relationship(User)
+    user_relationshiop = relationship(User)
     vehicles_id = Column(Integer, ForeignKey('vehicles.id'))
     vehicles_relationship = relationship(Vehicle)
 
