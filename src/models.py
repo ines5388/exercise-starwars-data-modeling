@@ -1,9 +1,7 @@
-import os
-import sys
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship, declarative_base
-from sqlalchemy import create_engine
 from eralchemy2 import render_er
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -12,69 +10,68 @@ class Register(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     surname = Column(String(250), nullable=False)
-    date_suscription = ()
-    email = Column(String(250), unique=True)
-    username = Column(String(25), unique=True)
+    email = Column(String(250), unique=True, nullable=False)
+    username = Column(String(25), unique=True, nullable=False)
     password = Column(String(50), nullable=False)
+    created_at = Column(DateTime(), default=datetime.now())
 
 class LogIn(Base):
     __tablename__ = 'login'
     id = Column(Integer, primary_key=True)
     success = Column(Boolean, default=False)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
 
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     register_id = Column(Integer, ForeignKey('register.id'))
 
-class Characters(Base):
+class Character(Base):
     __tablename__ = 'characters'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
     description = Column(String(500), nullable=True)
     character_img = Column(String(500), nullable=True)
-    favorites_character = relationship('favorites_characters', backref = 'characters', lazy=True)
 
-class FavoritesCharacters(Base):
+class FavoriteCharacter(Base):
     __tablename__ = 'favorites_characters'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
     user_relantionship = relationship(User)
-    characters_id = Column(Integer, ForeignKey('characters.id'), nullable=False)
-    characters_relantionship = relationship(Characters)
+    characters_id = Column(Integer, ForeignKey('characters.id'))
+    characters_relantionship = relationship(Character)
 
-class Planets(Base):
+class Planet(Base):
     __tablename__ = 'planets'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
     description = Column(String(500), nullable=True)
     planets_img = Column(String(500), nullable=True)
 
-class FavoritesPlanets(Base):
+class FavoritePlanet(Base):
     __tablename__ = 'favorites_planets'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
     user_relantionshiop = relationship(User)
-    planets_id = Column(Integer, ForeignKey('planets.id'), nullable=False)
-    planets_relationship = relationship(Planets)
+    planets_id = Column(Integer, ForeignKey('planets.id'))
+    planets_relationship = relationship(Planet)
 
-class Vehicles(Base):
+class Vehicle(Base):
     __tablename__ = 'vehicles'
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String(50), nullable=False)
     description = Column(String(500), nullable=True)
     vehicles_img = Column(String(500), nullable=True)
 
-class FavoritesVehicles(Base):
+class FavoriteVehicle(Base):
     __tablename__ = 'favorites_vehicles'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
     user_relantionshiop = relationship(User)
-    vehicles_id = Column(Integer, ForeignKey('vehicles.id'), nullable=False)
-    vehicles_relationship = relationship(Vehicles)
+    vehicles_id = Column(Integer, ForeignKey('vehicles.id'))
+    vehicles_relationship = relationship(Vehicle)
 
     def to_dict(self):
         return {}
