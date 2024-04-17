@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship, declarative_base
 from eralchemy2 import render_er
 from datetime import datetime
@@ -16,6 +16,9 @@ class User(Base):
     password = Column(String(50), nullable=False)
     created_at = Column(DateTime(), default=datetime.now(), nullable=False)
     register_id = Column(Integer, ForeignKey('register.id'))
+    favorites_characters = relationship('FavoriteCharacter', backref='users', lazy=True)
+    favorites_planets = relationship('FavoritePlanet', backref='users', lazy=True)
+    favorites_vehicles = relationship('FavoriteVehicle', backref='users', lazy=True)
 
 class Character(Base):
     __tablename__ = 'characters'
@@ -23,14 +26,13 @@ class Character(Base):
     name = Column(String(50), nullable=False)
     description = Column(String(500), nullable=True)
     character_img = Column(String(500), nullable=True)
+    favorites_characters = relationship('FavoriteCharacter', backref='characters', lazy=True)
 
 class FavoriteCharacter(Base):
     __tablename__ = 'favorites_characters'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    user_relantionship = relationship(User)
     characters_id = Column(Integer, ForeignKey('characters.id'))
-    characters_relantionship = relationship(Character)
 
 class Planet(Base):
     __tablename__ = 'planets'
@@ -38,14 +40,13 @@ class Planet(Base):
     name = Column(String(50), nullable=False)
     description = Column(String(500), nullable=True)
     planets_img = Column(String(500), nullable=True)
+    favorites_planets = relationship('FavoritePlanet', backref='planets', lazy=True)
 
 class FavoritePlanet(Base):
     __tablename__ = 'favorites_planets'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    user_relantionshiop = relationship(User)
     planets_id = Column(Integer, ForeignKey('planets.id'))
-    planets_relationship = relationship(Planet)
 
 class Vehicle(Base):
     __tablename__ = 'vehicles'
@@ -53,14 +54,13 @@ class Vehicle(Base):
     name = Column(String(50), nullable=False)
     description = Column(String(500), nullable=True)
     vehicles_img = Column(String(500), nullable=True)
+    favorites_vehicles = relationship('FavoriteVehicle', backref='vehicles', lazy=True)
 
 class FavoriteVehicle(Base):
     __tablename__ = 'favorites_vehicles'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    user_relationshiop = relationship(User)
     vehicles_id = Column(Integer, ForeignKey('vehicles.id'))
-    vehicles_relationship = relationship(Vehicle)
 
     def to_dict(self):
         return {}
